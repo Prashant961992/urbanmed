@@ -27,13 +27,18 @@ class DrawerState extends State<MyDrawer> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Text(''),
-            accountEmail: Text("shahvishwa1330@gmail.com"),
+            accountEmail: Text("${auth.currentUser.email}"),
             onDetailsPressed: () {},
           ),
           ListTile(
@@ -66,12 +71,12 @@ class DrawerState extends State<MyDrawer> {
             enabled: true,
             title: Text("Your Orders"),
           ),
-          ListTile(
-            leading: Icon(Icons.chat),
-            onTap: () {},
-            enabled: true,
-            title: Text("My Chat"),
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.chat),
+          //   onTap: () {},
+          //   enabled: true,
+          //   title: Text("My Chat"),
+          // ),
           ListTile(
             leading: Icon(Icons.location_on),
             onTap: () {},
@@ -105,7 +110,7 @@ class DrawerState extends State<MyDrawer> {
                   (route) => false);
             },
             enabled: true,
-            title: Text("Sign out"),
+            title: Text("Log Out"),
           ),
           ListTile(
             leading: Icon(Icons.question_answer),

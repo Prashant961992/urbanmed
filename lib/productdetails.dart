@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:urbanmed/commons.dart';
 import 'package:urbanmed/constant.dart';
 import 'package:urbanmed/dealdashboard.dart';
 import 'package:urbanmed/loading.dart';
@@ -36,11 +37,11 @@ class Product extends State<ProductRegister> {
   final productcompanyInputController = new TextEditingController();
 
   // ignore: non_constant_identifier_names
-  final ProductDatabase = FirebaseDatabase.instance
-      .reference()
-      .child("Retailer")
-      .child("Shopdata")
-      .child("ProductData");
+  // final ProductDatabase = FirebaseDatabase.instance
+  //     .reference()
+  //     .child("Retailer")
+  //     .child("Shopdata")
+  //     .child("ProductData");
   String productname = '';
   String medicinetype = '';
 
@@ -51,6 +52,24 @@ class Product extends State<ProductRegister> {
   String expiring_date = '';
   String cost = '';
   String productcompany = '';
+  var query;
+  var shopID = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getDetails();
+  }
+
+  void getDetails() async {
+    query = await FirebaseFirestore.instance
+        .collection('Retailer')
+        .where('email', isEqualTo: firebaseUser.email)
+        .get();
+    if (query.docs.isNotEmpty) {
+      shopID = query.docs[0].id;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,75 +174,52 @@ class Product extends State<ProductRegister> {
                               'productcompany':
                                   productcompanyInputController.text,
                             };
-                            FirebaseFirestore.instance
-                                .collection('Shopdata')
-                                .doc(firebaseUser.uid)
-                                .collection("ProductData")
-                                .add(data);
-                            print(data);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductRegister(firebaseUser.uid), //User),
-                              ),
-                            );
 
-                            //cloud vado code
-                            FirebaseFirestore.instance
-                                .collection('Shopdata')
-                                .doc(firebaseUser.uid)
-                                .collection("ProductData")
-                                .add(
-                              {
-                                'productname': productnameInputController.text,
-                                'medicinetype':
-                                    medicineTypeInputController.text,
-                                'manufacture_date':
-                                    manufacturing_dateInputController.text,
-                                'expiry_date':
-                                    expiring_dateInputController.text,
-                                'cost': costInputController.text,
-                                'productcompany': productcompanyInputController,
-                              },
-                            ).then((_) {
-                              SetOptions(merge: true);
-                              productnameInputController.value;
+                            try {
+                              await FirebaseFirestore.instance
+                                  .collection('Retailer')
+                                  .doc(shopID)
+                                  .collection("ProductData")
+                                  .add(data);
+
+                              productnameInputController.clear();
                               medicineTypeInputController.clear();
                               manufacturing_dateInputController.clear();
                               expiring_dateInputController.clear();
                               costInputController.clear();
                               productcompanyInputController.clear();
-                            }).catchError((onError) {
-                              print("sucess");
-                            });
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductRegister(firebaseUser.uid), //User),
-                              ),
-                            );
+                            } catch (e) {
+                              showMyDialog(context, 'Error!!', e.message);
+                            }
+
+                            // Navigator.of(context).pushReplacement(
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>
+                            //         ProductRegister(firebaseUser.uid), //User),
+                            //   ),
+                            // );
                           } else {
                             print("Error");
                           }
 
                           /// database mate no codee
-                          ProductDatabase.push().update({
-                            'productname': productnameInputController.text,
-                            'medicinetype': medicineTypeInputController.text,
-                            'manufacture_date':
-                                manufacturing_dateInputController.text,
-                            'expiry_date': expiring_dateInputController.text,
-                            'cost': costInputController.text,
-                            'productcompany':
-                                productcompanyInputController.text,
-                          }).then((_) {
-                            productnameInputController.clear();
-                            medicineTypeInputController.clear();
-                            manufacturing_dateInputController.clear();
-                            expiring_dateInputController.clear();
-                            costInputController.clear();
-                            productcompanyInputController.clear();
-                          }).catchError((onError) {});
+                          // ProductDatabase.push().update({
+                          //   'productname': productnameInputController.text,
+                          //   'medicinetype': medicineTypeInputController.text,
+                          //   'manufacture_date':
+                          //       manufacturing_dateInputController.text,
+                          //   'expiry_date': expiring_dateInputController.text,
+                          //   'cost': costInputController.text,
+                          //   'productcompany':
+                          //       productcompanyInputController.text,
+                          // }).then((_) {
+                          //   productnameInputController.clear();
+                          //   medicineTypeInputController.clear();
+                          //   manufacturing_dateInputController.clear();
+                          //   expiring_dateInputController.clear();
+                          //   costInputController.clear();
+                          //   productcompanyInputController.clear();
+                          // }).catchError((onError) {});
                         }),
                     SizedBox(height: 12.0),
                     ElevatedButton(

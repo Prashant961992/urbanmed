@@ -32,7 +32,7 @@ class Ddrawer extends State<Dealdrawer> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Text("$User.ownername"),
-            accountEmail: Text("$User.email"),
+            accountEmail: Text("${auth.currentUser.email}"),
             onDetailsPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => Profilepage(),
@@ -67,20 +67,20 @@ class Ddrawer extends State<Dealdrawer> {
               ));
             },
             enabled: true,
-            title: Text("Your Product Details"),
+            title: Text("Add Product"),
           ),
-          ListTile(
-            leading: Icon(Icons.chat),
-            onTap: () {},
-            enabled: true,
-            title: Text("Chat"),
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            onTap: () {},
-            enabled: true,
-            title: Text("Settings"),
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.chat),
+          //   onTap: () {},
+          //   enabled: true,
+          //   title: Text("Chat"),
+          // ),
+          // ListTile(
+          //   leading: Icon(Icons.settings),
+          //   onTap: () {},
+          //   enabled: true,
+          //   title: Text("Settings"),
+          // ),
           ListTile(
             leading: Icon(Icons.help),
             onTap: () {
