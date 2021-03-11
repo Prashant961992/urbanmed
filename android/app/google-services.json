@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "340095046431",
+    "project_id": "urbanmed-6b5bf",
+    "storage_bucket": "urbanmed-6b5bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:340095046431:android:82da23090297a8155a162a",
+        "android_client_info": {
+          "package_name": "com.example.urbanmed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "340095046431-bb62a5j7p2ub18vnu5icog7iccnikvst.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": " AIzaSyAx8AALWaxy5ub5wnM3f2qbcKUuIUjKEGk "
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "340095046431-bb62a5j7p2ub18vnu5icog7iccnikvst.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
