@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:urbanmed/commons.dart';
+import 'package:urbanmed/cusdashboard.dart';
 
 class CheckOutData {
   double price;
@@ -23,6 +25,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   var subTotal = 0.0;
   var deliveryCharge = 25.0;
   var tax = 0.0;
+  var tempCart = <dynamic>[];
 
   @override
   void initState() {
@@ -45,6 +48,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       shopDatas.productName = data['productname'];
       subTotal = subTotal + shopDatas.price;
       listcartData.add(shopDatas);
+      tempCart.add(data);
     }
 
     tax = subTotal * 18 / 100;
@@ -98,13 +102,61 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               ),
             ),
             RaisedButton(
-              child: Text('Pay Now Rs. ${total.toString()}'),
-              onPressed: () {},
+              child: Text('Click To Complete Order'),
+              onPressed: () {
+                addToOrder();
+              },
             )
           ],
         ),
       ),
     );
+  }
+
+  void addToOrder() async {
+    showProgressDialog('Please Wait...', context);
+    Map<String, dynamic> data = {
+      'orderAmount': total,
+      'paymentType': 'cash_in_delivery',
+      'deliveredon': DateTime.now().add(Duration(days: 2)),
+    };
+
+    var documentData = await FirebaseFirestore.instance
+        .collection('Customers')
+        .doc(auth.currentUser.uid)
+        .collection('Orders')
+        .add(data);
+
+    for (var i = 0; i < tempCart.length; i++) {
+      await FirebaseFirestore.instance
+          .collection('Customers')
+          .doc(auth.currentUser.uid)
+          .collection('Orders')
+          .doc(documentData.id)
+          .collection('products')
+          .add(tempCart[i]);
+    }
+
+    removeAllProductFromCart();
+  }
+
+  void removeAllProductFromCart() async {
+    await FirebaseFirestore.instance
+        .collection('Customers')
+        .doc(auth.currentUser.uid)
+        .collection('Cart')
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.delete();
+      }
+    });
+
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => CustomerDashboard(),
+        ),
+        (route) => false);
   }
 }
 
