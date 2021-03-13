@@ -84,12 +84,12 @@ class DrawerState extends State<MyDrawer> {
             enabled: true,
             title: Text("Pharmacy By Area"),
           ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            onTap: () {},
-            enabled: true,
-            title: Text("Settings"),
-          ),
+          // ListTile(
+          //   leading: Icon(Icons.settings),
+          //   onTap: () {},
+          //   enabled: true,
+          //   title: Text("Settings"),
+          // ),
           ListTile(
             leading: Icon(Icons.help),
             onTap: () {
