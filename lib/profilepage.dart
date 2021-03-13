@@ -11,6 +11,11 @@ class _ProfilepageState extends State<Profilepage> {
   String eid = 'shahvishwa1330@gmail.com';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Icon ofericon = Icon(
       Icons.edit,

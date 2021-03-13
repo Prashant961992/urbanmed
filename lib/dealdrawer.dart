@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/dealdashboard.dart';
+import 'package:urbanmed/faq_screen.dart';
 import 'package:urbanmed/productdetails.dart';
 import 'package:urbanmed/profilepage.dart';
 import 'package:urbanmed/retailerLogin.dart';
@@ -31,12 +32,13 @@ class Ddrawer extends State<Dealdrawer> {
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text("$User.ownername"),
+            arrowColor: Colors.transparent,
+            accountName: Text("Owner Name"),
             accountEmail: Text("${auth.currentUser.email}"),
             onDetailsPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Profilepage(),
-              ));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //   builder: (context) => Profilepage(),
+              // ));
             },
           ),
           ListTile(
@@ -69,18 +71,6 @@ class Ddrawer extends State<Dealdrawer> {
             enabled: true,
             title: Text("Add Product"),
           ),
-          // ListTile(
-          //   leading: Icon(Icons.chat),
-          //   onTap: () {},
-          //   enabled: true,
-          //   title: Text("Chat"),
-          // ),
-          // ListTile(
-          //   leading: Icon(Icons.settings),
-          //   onTap: () {},
-          //   enabled: true,
-          //   title: Text("Settings"),
-          // ),
           ListTile(
             leading: Icon(Icons.help),
             onTap: () {
@@ -90,6 +80,16 @@ class Ddrawer extends State<Dealdrawer> {
             },
             enabled: true,
             title: Text("Help"),
+          ),
+          ListTile(
+            leading: Icon(Icons.question_answer),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => FAQScreen(),
+              ));
+            },
+            enabled: true,
+            title: Text("FAQ"),
           ),
           ListTile(
             leading: Icon(Icons.logout),
@@ -103,12 +103,6 @@ class Ddrawer extends State<Dealdrawer> {
             },
             enabled: true,
             title: Text("Log Out"),
-          ),
-          ListTile(
-            leading: Icon(Icons.question_answer),
-            onTap: () {},
-            enabled: true,
-            title: Text("FAQ"),
           ),
         ],
       ),

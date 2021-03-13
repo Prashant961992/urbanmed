@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:urbanmed/cusdashboard.dart';
 import 'package:urbanmed/cust_pharmaby_by_area.dart';
 import 'package:urbanmed/custlogin.dart';
+import 'package:urbanmed/faq_screen.dart';
 import 'package:urbanmed/helppage.dart';
 import 'package:urbanmed/orderhistory.dart';
 import 'package:urbanmed/profilepage.dart';
@@ -38,6 +39,7 @@ class DrawerState extends State<MyDrawer> {
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
+            arrowColor: Colors.transparent,
             accountName: Text(''),
             accountEmail: Text("${auth.currentUser.email}"),
             onDetailsPressed: () {},
@@ -99,6 +101,16 @@ class DrawerState extends State<MyDrawer> {
             title: Text("Help"),
           ),
           ListTile(
+            leading: Icon(Icons.question_answer),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => FAQScreen(),
+              ));
+            },
+            enabled: true,
+            title: Text("FAQ"),
+          ),
+          ListTile(
             leading: Icon(Icons.logout),
             onTap: () async {
               await auth.signOut();
@@ -110,12 +122,6 @@ class DrawerState extends State<MyDrawer> {
             },
             enabled: true,
             title: Text("Log Out"),
-          ),
-          ListTile(
-            leading: Icon(Icons.question_answer),
-            onTap: () {},
-            enabled: true,
-            title: Text("FAQ"),
           ),
         ],
       ),
