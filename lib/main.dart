@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:urbanmed/cusdashboard.dart';
-import 'package:urbanmed/retailerLogin.dart';
 import 'splashscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:urbanmed/retailerLogin.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: myColour,
       ),
-      home: Splash(),
+      home: CustomerDashboard(),
       routes: <String, WidgetBuilder>{
         // '/screen1': (BuildContext context) => Login(),
         // '/screen2': (BuildContext context) => new Screen2(),

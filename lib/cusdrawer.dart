@@ -45,7 +45,7 @@ class DrawerState extends State<MyDrawer> {
             leading: Icon(Icons.home),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Cusboard(),
+                builder: (context) => CustomerDashboard(),
               ));
             },
             enabled: true,

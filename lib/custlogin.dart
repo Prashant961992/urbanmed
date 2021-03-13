@@ -112,7 +112,7 @@ class Login extends State<CusLogin> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Cusboard(),
+                                  builder: (context) => CustomerDashboard(),
                                 ),
                               );
                             } catch (e) {

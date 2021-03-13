@@ -1,33 +1,103 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:urbanmed/Medicinedata.dart';
 import 'package:urbanmed/cusdrawer.dart';
 import 'package:flutter/material.dart';
+import 'package:urbanmed/customer_product_screen.dart';
 
-class Cusboard extends StatefulWidget {
-  String get id => null;
+class ShopData {
+  double latitude;
+  double longitude;
+  String shopname;
+  String pincode;
+  String id;
+  String address;
+  String contactNUmber;
+  String emailid;
 
-  @override
-  Dashboard createState() => Dashboard();
+  ShopData(
+      {this.latitude,
+      this.longitude,
+      this.shopname,
+      this.id,
+      this.pincode,
+      this.address,
+      this.contactNUmber,
+      this.emailid});
 }
 
-class Dashboard extends State<Cusboard> {
-  final database = FirebaseFirestore.instance;
+class CustomerDashboard extends StatefulWidget {
+  CustomerDashboard({Key key}) : super(key: key);
+
+  @override
+  CustomerDashboardState createState() => CustomerDashboardState();
+}
+
+class CustomerDashboardState extends State<CustomerDashboard> {
+  // final database = FirebaseFirestore.instance;
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-  Position _currentPosition;
+  Position currentPosition;
   String currentAddress;
+  Icon cusIcon = Icon(Icons.search);
+  Widget cusSearchbar = Text("UrbanMed");
 
   //for creating radius dialog box method
   TextEditingController radiuscontroller = TextEditingController();
-
-//  var fetch = FirebaseFirestore.instance
-  //    .collection('Shopdata')
-  //  .snapshots;
+  bool isloading;
   File image;
+  var listShopID = <ShopData>[];
+
+  @override
+  void initState() {
+    super.initState();
+    //_getCurrentLocation();
+    getNearestShops();
+  }
+
+  static double checkDouble(dynamic value) {
+    if (value is String) {
+      return double.parse(value);
+    } else {
+      return value;
+    }
+  }
+
+  void getNearestShops() async {
+    isloading = true;
+    currentPosition = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+
+    var query = await FirebaseFirestore.instance.collection('Retailer').get();
+    if (query.docs.isNotEmpty) {
+      for (var i = 0; i < query.docs.length; i++) {
+        var shopData = await FirebaseFirestore.instance
+            .collection('Retailer')
+            .doc(query.docs[i].id)
+            .collection('Shopdata')
+            .get();
+        if (shopData.docs.isNotEmpty) {
+          var latitude = checkDouble(shopData.docs[0].data()['Latitude']);
+          var longitude = checkDouble(shopData.docs[0].data()['Longitude']);
+          var shopDatas = ShopData();
+          shopDatas.id = query.docs[i].id;
+          shopDatas.latitude = latitude;
+          shopDatas.longitude = longitude;
+          shopDatas.shopname = shopData.docs[0].data()['shopname'];
+          shopDatas.pincode = shopData.docs[0].data()['pincode'];
+          shopDatas.address = shopData.docs[0].data()['Address'].toString();
+          shopDatas.contactNUmber =
+              shopData.docs[0].data()['contact'].toString();
+          listShopID.add(shopDatas);
+        }
+      }
+    }
+    isloading = false;
+    setState(() {});
+  }
 
   _imgFromCamera() async {
     PickedFile picture =
@@ -93,45 +163,6 @@ class Dashboard extends State<Cusboard> {
           );
         });
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  _getCurrentLocation() {
-    Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-      setState(() {
-        _currentPosition = position;
-      });
-
-      _getAddressFromLatLng();
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  _getAddressFromLatLng() async {
-    try {
-      List<Placemark> p = await geolocator.placemarkFromCoordinates(
-          _currentPosition.latitude, _currentPosition.longitude);
-
-      Placemark place = p[0];
-
-      setState(() {
-        currentAddress =
-            "${place.locality}, ${place.postalCode}, ${place.country}";
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Icon cusIcon = Icon(Icons.search);
-  Widget cusSearchbar = Text("UrbanMed");
 
   @override
   Widget build(BuildContext context) {
@@ -223,71 +254,42 @@ class Dashboard extends State<Cusboard> {
           ),
         ],
       )),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Shopdata').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              var doc = snapshot.data.docs;
-              return new ListView.builder(
-                  itemCount: doc.length,
+      body: isloading == true
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.builder(
+                  itemCount: listShopID.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          //print(doc[index].documentID);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    MedicineData(doc[index].id)),
-                          );
-                        },
-                        child: Card(
-                          child: Column(
-                            children: <Widget>[
-                              Text("owner Name : " +
-                                  doc[index].data()['shopname']),
-                              //Text("Contact : " + doc[index].data()['contact']),
-                              //Text("Email : " + doc[index].data()['email']),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomerProductScreen(
+                                    shopId: listShopID[index].id,
+                                  )),
+                        );
+                      },
+                      child: Card(
+                        elevation: 0.8,
+                        child: ListTile(
+                          title:
+                              Text("Shop Name : " + listShopID[index].shopname),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Contact Number : " +
+                                  listShopID[index].contactNUmber),
+                              Text("Address : " + listShopID[index].address),
                             ],
                           ),
+                          trailing: Icon(Icons.forward),
+                          // subtitle: ,
                         ),
                       ),
                     );
-                  });
-            } else {
-              return LinearProgressIndicator();
-            }
-          },
-        ),
-      ),
+                  })),
     );
-
-    /*FutureBuilder(
-        future: DefaultAssetBundle.of(context).loadString("asset/data.json"),
-        builder: (context,snapshot) {
-          var mydata = json.decode(snapshot.data.toString());
-          if (mydata == null) {
-            return Center(
-              child: Text(
-                'Loading',
-              ),
-            );
-          }
-          else {
-            return Center(
-              child: Text(
-                mydata[1]["name"],
-                style: TextStyle(
-                  fontSize: 25.0
-                ),
-              ),
-            );
-          }
-        },
-      ),*/
   }
 }
