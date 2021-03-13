@@ -42,7 +42,6 @@ class CustomerDashboard extends StatefulWidget {
 }
 
 class CustomerDashboardState extends State<CustomerDashboard> {
-  // final database = FirebaseFirestore.instance;
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   Position currentPosition;
   String currentAddress;

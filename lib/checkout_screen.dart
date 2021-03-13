@@ -118,7 +118,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     Map<String, dynamic> data = {
       'orderAmount': total,
       'paymentType': 'cash_in_delivery',
-      'deliveredon': DateTime.now().add(Duration(days: 2)),
+      'orderStatus': 'pending',
+      'deliveredon': DateTime.now().add(Duration(days: 2)).toString(),
     };
 
     var documentData = await FirebaseFirestore.instance

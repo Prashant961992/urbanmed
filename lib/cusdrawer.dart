@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/cusdashboard.dart';
+import 'package:urbanmed/cust_pharmaby_by_area.dart';
 import 'package:urbanmed/custlogin.dart';
 import 'package:urbanmed/helppage.dart';
 import 'package:urbanmed/orderhistory.dart';
@@ -71,15 +72,13 @@ class DrawerState extends State<MyDrawer> {
             enabled: true,
             title: Text("Your Orders"),
           ),
-          // ListTile(
-          //   leading: Icon(Icons.chat),
-          //   onTap: () {},
-          //   enabled: true,
-          //   title: Text("My Chat"),
-          // ),
           ListTile(
             leading: Icon(Icons.location_on),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => CustPharmacyByAreaScreen(),
+              ));
+            },
             enabled: true,
             title: Text("Pharmacy By Area"),
           ),
