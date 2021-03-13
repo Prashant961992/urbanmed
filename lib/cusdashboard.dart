@@ -69,6 +69,8 @@ class CustomerDashboardState extends State<CustomerDashboard> {
 
   void getNearestShops() async {
     isloading = true;
+    listShopID = <ShopData>[];
+    setState(() {});
     currentPosition = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
@@ -83,6 +85,13 @@ class CustomerDashboardState extends State<CustomerDashboard> {
         if (shopData.docs.isNotEmpty) {
           var latitude = checkDouble(shopData.docs[0].data()['Latitude']);
           var longitude = checkDouble(shopData.docs[0].data()['Longitude']);
+
+          // Geodesy geodesy = Geodesy();
+          // LatLng l1 = LatLng(37.4211245, -122.095);
+          // LatLng l2 = LatLng(latitude, longitude);
+          // num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1) / 1000;
+          // print(
+          //     "[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
           var shopDatas = ShopData();
           shopDatas.id = query.docs[i].id;
           shopDatas.latitude = latitude;
@@ -99,13 +108,6 @@ class CustomerDashboardState extends State<CustomerDashboard> {
       if (radiuscontroller.text.isEmpty) {
       } else {}
     }
-
-    // Geodesy geodesy = Geodesy();
-    // LatLng l1 = LatLng(22.274236, 73.1864025);
-    // LatLng l2 = LatLng(22.2726, 73.1906);
-
-    // num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1);
-    // print("[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
 
     isloading = false;
     setState(() {});
@@ -273,6 +275,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
               ElevatedButton(
                 child: Text('Ok'),
                 onPressed: () {
+                  getNearestShops();
                   Navigator.of(context).pop();
                 },
               )
