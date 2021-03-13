@@ -3,11 +3,15 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:geodesy/geodesy.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:urbanmed/cusdrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/customer_product_screen.dart';
+import 'package:urbanmed/no_data_Found.dart';
+
+import 'Cart_Page.dart';
 
 class ShopData {
   double latitude;
@@ -45,7 +49,6 @@ class CustomerDashboardState extends State<CustomerDashboard> {
   Icon cusIcon = Icon(Icons.search);
   Widget cusSearchbar = Text("UrbanMed");
 
-  //for creating radius dialog box method
   TextEditingController radiuscontroller = TextEditingController();
   bool isloading;
   File image;
@@ -54,7 +57,6 @@ class CustomerDashboardState extends State<CustomerDashboard> {
   @override
   void initState() {
     super.initState();
-    //_getCurrentLocation();
     getNearestShops();
   }
 
@@ -94,79 +96,24 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           listShopID.add(shopDatas);
         }
       }
+
+      if (radiuscontroller.text.isEmpty) {
+      } else {}
     }
+
+    // Geodesy geodesy = Geodesy();
+    // LatLng l1 = LatLng(22.274236, 73.1864025);
+    // LatLng l2 = LatLng(22.2726, 73.1906);
+
+    // num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1);
+    // print("[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
+
     isloading = false;
     setState(() {});
   }
 
-  _imgFromCamera() async {
-    PickedFile picture =
-        await ImagePicker().getImage(source: ImageSource.camera);
-    image = File(picture.path);
-    setState(() {});
-  }
-
-  _imgFromGallery() async {
-    PickedFile picture =
-        await ImagePicker().getImage(source: ImageSource.gallery);
-    image = File(picture.path);
-    setState(() {});
-  }
-
-  Future<String> createAlertDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Enter Radius in Km :"),
-            content: TextField(
-              controller: radiuscontroller,
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                child: Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context).pop(radiuscontroller.text.toString());
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  void _showPicker(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Photo Library'),
-                      onTap: () {
-                        _imgFromGallery();
-                        Navigator.of(context).pop();
-                      }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
-                    onTap: () {
-                      _imgFromCamera();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // firebaseUser= FirebaseFirestore.instance.collection('Retailer').snapshots();
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -239,7 +186,11 @@ class CustomerDashboardState extends State<CustomerDashboard> {
             child: SizedBox(
               height: 60.0,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => CartPage(),
+                  ));
+                },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -258,38 +209,106 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           ? Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ListView.builder(
-                  itemCount: listShopID.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CustomerProductScreen(
-                                    shopId: listShopID[index].id,
-                                  )),
-                        );
-                      },
-                      child: Card(
-                        elevation: 0.8,
-                        child: ListTile(
-                          title:
-                              Text("Shop Name : " + listShopID[index].shopname),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Contact Number : " +
-                                  listShopID[index].contactNUmber),
-                              Text("Address : " + listShopID[index].address),
-                            ],
+              child: listShopID.length == 0
+                  ? NoDataFoundWidget()
+                  : ListView.builder(
+                      itemCount: listShopID.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CustomerProductScreen(
+                                        shopId: listShopID[index].id,
+                                      )),
+                            );
+                          },
+                          child: Card(
+                            elevation: 0.8,
+                            child: ListTile(
+                              title: Text(
+                                  "Shop Name : " + listShopID[index].shopname),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Contact Number : " +
+                                      listShopID[index].contactNUmber),
+                                  Text(
+                                      "Address : " + listShopID[index].address),
+                                ],
+                              ),
+                              trailing: Icon(Icons.forward),
+                              // subtitle: ,
+                            ),
                           ),
-                          trailing: Icon(Icons.forward),
-                          // subtitle: ,
-                        ),
-                      ),
-                    );
-                  })),
+                        );
+                      })),
     );
+  }
+
+  _imgFromCamera() async {
+    PickedFile picture =
+        await ImagePicker().getImage(source: ImageSource.camera);
+    image = File(picture.path);
+    setState(() {});
+  }
+
+  _imgFromGallery() async {
+    PickedFile picture =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+    image = File(picture.path);
+    setState(() {});
+  }
+
+  Future<String> createAlertDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Enter Radius in Km :"),
+            content: TextField(
+              controller: radiuscontroller,
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Photo Library'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

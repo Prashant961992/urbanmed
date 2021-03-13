@@ -1,22 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'cartmodel.dart';
-//import 'package:shopping/cartmodel.dart';
+import 'package:urbanmed/checkout_screen.dart';
+import 'package:urbanmed/no_data_Found.dart';
+
+import 'commons.dart';
 
 class CartPage extends StatefulWidget {
+  CartPage({Key key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() {
-    return _CartPageState();
-  }
+  _CartPageState createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          //backgroundColor: Colors.indigo,
           title: Text("Cart"),
           actions: <Widget>[
             FlatButton(
@@ -24,83 +26,111 @@ class _CartPageState extends State<CartPage> {
                   "Clear",
                   style: TextStyle(color: Colors.white),
                 ),
-                onPressed: () => ScopedModel.of<CartModel>(context).clearCart())
+                onPressed: () {
+                  showDialog<void>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Clear Cart!!!'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text(
+                                  'Are you sure you want to remove all product from cart'),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('Yes'),
+                            onPressed: () {
+                              removeAllProductFromCart();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                })
           ],
         ),
-        body: ScopedModel.of<CartModel>(context, rebuildOnChange: true)
-                    .cart
-                    .length ==
-                0
-            ? Center(
-                child: Text("No items in Cart"),
-              )
-            : Container(
-                padding: EdgeInsets.all(8.0),
-                child: Column(children: <Widget>[
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: ScopedModel.of<CartModel>(context,
-                              rebuildOnChange: true)
-                          .total,
-                      itemBuilder: (context, index) {
-                        return ScopedModelDescendant<CartModel>(
-                          builder: (context, child, model) {
-                            return ListTile(
-                              title: Text(model.cart[index].title),
-                              subtitle: Text(model.cart[index].qty.toString() +
-                                  " x " +
-                                  model.cart[index].price.toString() +
-                                  " = " +
-                                  (model.cart[index].qty *
-                                          model.cart[index].price)
-                                      .toString()),
-                              trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.add),
-                                      onPressed: () {
-                                        model.updateProduct(model.cart[index],
-                                            model.cart[index].qty + 1);
-                                        // model.removeProduct(model.cart[index]);
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.remove),
-                                      onPressed: () {
-                                        model.updateProduct(model.cart[index],
-                                            model.cart[index].qty - 1);
-                                        // model.removeProduct(model.cart[index]);
-                                      },
-                                    ),
-                                  ]),
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('Customers')
+                .doc(auth.currentUser.uid)
+                .collection('Cart')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.docs.length == 0) {
+                  return NoDataFoundWidget();
+                } else {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              elevation: 0.8,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                      "Product Name: ${snapshot.data.docs[index].data()['productname']}"),
+                                  Text(
+                                      "Medicine Type: ${snapshot.data.docs[index].data()['medicinetype']}"),
+                                  Text(
+                                      "Manufacturing Date: ${snapshot.data.docs[index].data()['manufacture_date']}"),
+                                  Text(
+                                      "Expiry Date: ${snapshot.data.docs[index].data()['expiry_date']}"),
+                                  Text(
+                                      "Cost: ${snapshot.data.docs[index].data()['cost'].toString()}"),
+                                ],
+                              ),
                             );
                           },
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "Total: \$ " +
-                            ScopedModel.of<CartModel>(context,
-                                    rebuildOnChange: true)
-                                .totalCartValue
-                                .toString() +
-                            "",
-                        style: TextStyle(
-                            fontSize: 24.0, fontWeight: FontWeight.bold),
-                      )),
-                  SizedBox(
-                      width: double.infinity,
-                      child: RaisedButton(
-                        color: Colors.yellow[900],
-                        textColor: Colors.white,
-                        elevation: 0,
-                        child: Text("BUY NOW"),
-                        onPressed: () {},
-                      ))
-                ])));
+                          padding: EdgeInsets.all(8),
+                        ),
+                      ),
+                      snapshot.data.docs.length == 0
+                          ? Container()
+                          : RaisedButton(
+                              child: Text('Proceed To Check Out'),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CheckOutScreen(),
+                                ));
+                              },
+                            )
+                    ],
+                  );
+                }
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }));
+  }
+
+  void removeAllProductFromCart() {
+    FirebaseFirestore.instance
+        .collection('Customers')
+        .doc(auth.currentUser.uid)
+        .collection('Cart')
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.delete();
+      }
+    });
   }
 }
