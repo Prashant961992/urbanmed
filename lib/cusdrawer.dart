@@ -62,7 +62,7 @@ class DrawerState extends State<MyDrawer> {
               ));
             },
             enabled: true,
-            title: Text("Your Account"),
+            title: Text("User Profile"),
           ),
           ListTile(
             leading: Icon(Icons.local_grocery_store),
