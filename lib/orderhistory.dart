@@ -31,25 +31,6 @@ class Item {
 class _OrderhistoryState extends State<Orderhistory> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  // List<Item> itemList = <Item>[
-  //   Item(
-  //       name: 'Jhone Miller',
-  //       deliveryTime: '265-2106',
-  //       oderId: '#CN23656',
-  //       oderAmount: '\â‚¹ 650',
-  //       paymentType: 'online',
-  //       address: '1338 Karen Lane,Louisville,Kentucky',
-  //       cancelOder: 'Cancel Order'),
-
-  //   Item(
-  //       name: 'Lag Gilli',
-  //       deliveryTime: '26-10-2107',
-  //       oderId: '#CN69532',
-  //       oderAmount: '\â‚¹ 1120',
-  //       paymentType: 'online',
-  //       address: '8 Clarksburg Park,Marble Canyon,Arizona',
-  //       cancelOder: 'View Receipt'),
-  // ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

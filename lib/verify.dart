@@ -35,8 +35,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text(
-            'An email has been sent to ${user.email} please verify'),
+        child: Text('An email has been sent to ${user.email} please verify'),
       ),
     );
   }
@@ -46,8 +45,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
     await user.reload();
     if (user.emailVerified) {
       timer.cancel();
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Screen()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Screen()));
     }
   }
 }
