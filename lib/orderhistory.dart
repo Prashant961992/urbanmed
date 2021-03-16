@@ -188,7 +188,10 @@ class _OrderhistoryState extends State<Orderhistory> {
                                                     margin: EdgeInsets.only(
                                                         top: 3.0),
                                                     child: Text(
-                                                      'Cash On Delivery',
+                                                      orderData['paymentType'] ==
+                                                              'online'
+                                                          ? 'Online'
+                                                          : 'Cash On Delivery',
                                                       style: TextStyle(
                                                           fontSize: 15.0,
                                                           color:

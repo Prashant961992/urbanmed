@@ -39,7 +39,6 @@ dependencies:
   google_maps_flutter: ^0.2.0
   image_picker: ^0.6.7+4
   location: ^3.1.0
-  paytm: ^2.0.0
   provider: ^4.3.2+3
   scoped_model: ^1.1.0
   shared_preferences: ^0.5.12+4
@@ -62,6 +61,7 @@ flutter:
   assets:
     - Images/Customer.png
     - Images/Owner.jpg
+    - Images/qr_code.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

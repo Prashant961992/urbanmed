@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/commons.dart';
 import 'package:urbanmed/cusdashboard.dart';
+import 'package:urbanmed/show_qrcode_screen.dart';
 
 class PaymentType {
   final String title;
@@ -34,7 +35,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   var deliveryCharge = 25.0;
   var tax = 0.0;
   var tempCart = <dynamic>[];
-
+  var ispaymentonline = false;
   var listCheckedBox = <PaymentType>[
     PaymentType(title: 'Cash On Delivery', isSelected: true, id: 0),
     PaymentType(title: 'Online', isSelected: false, id: 1),
@@ -175,8 +176,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   }
                 }
                 if (id == 0) {
+                  ispaymentonline = false;
                   addToOrder('cash_in_delivery');
-                } else {}
+                } else {
+                  ispaymentonline = true;
+                  addToOrder('online');
+                }
               },
             )
           ],
@@ -225,11 +230,19 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       }
     });
 
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => CustomerDashboard(),
-        ),
-        (route) => false);
+    if (ispaymentonline) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => ShowQrCodeScreen(),
+          ),
+          (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => CustomerDashboard(),
+          ),
+          (route) => false);
+    }
   }
 }
 
