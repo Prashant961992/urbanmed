@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbanmed/commons.dart';
 import 'package:urbanmed/constant.dart';
 import 'package:urbanmed/cusdashboard.dart';
@@ -109,6 +110,11 @@ class Login extends State<CusLogin> {
                                   .signInWithEmailAndPassword(
                                       email: emailInputController.text,
                                       password: passwordInputController.text);
+
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setBool('islogin', true);
+                              await prefs.setString('type', 'customer');
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

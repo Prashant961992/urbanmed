@@ -1,17 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:urbanmed/cusdashboard.dart';
 // import 'package:urbanmed/cusdashboard.dart';
 import 'package:urbanmed/screen.dart';
 // import 'splashscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'dealdashboard.dart';
 // import 'package:urbanmed/retailerLogin.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+
+  var widget = await getDefaultWidget();
+
+  runApp(MyApp(
+    defaultWidget: widget,
+  ));
 }
 
-class MyApp extends StatelessWidget {
+Future<Widget> getDefaultWidget() async {
+  Widget _defaultWidget = Screen();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  try {
+    if (!prefs.getBool('islogin')) {
+      _defaultWidget = Screen();
+    } else {
+      var type = prefs.getString('type');
+      if (type != null) {
+        if (type == 'retail') {
+          _defaultWidget = Ddashboard();
+        } else {
+          _defaultWidget = CustomerDashboard();
+        }
+      } else {
+        _defaultWidget = Screen();
+      }
+    }
+  } catch (e) {
+    _defaultWidget = Screen();
+  }
+  return _defaultWidget;
+}
+
+class MyApp extends StatefulWidget {
+  final Widget defaultWidget;
+
+  MyApp({this.defaultWidget});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +62,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: myColour,
       ),
-      home: Screen(),
+      home: widget.defaultWidget,
     );
   }
 }

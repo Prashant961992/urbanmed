@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbanmed/cusdashboard.dart';
 import 'package:urbanmed/cust_pharmaby_by_area.dart';
 import 'package:urbanmed/custlogin.dart';
@@ -114,6 +115,9 @@ class DrawerState extends State<MyDrawer> {
             leading: Icon(Icons.logout),
             onTap: () async {
               await auth.signOut();
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('islogin', false);
+              await prefs.setString('type', '');
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => Screen(),

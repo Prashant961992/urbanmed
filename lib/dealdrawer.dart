@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbanmed/dealdashboard.dart';
 import 'package:urbanmed/faq_screen.dart';
 import 'package:urbanmed/productdetails.dart';
@@ -95,6 +96,9 @@ class Ddrawer extends State<Dealdrawer> {
             leading: Icon(Icons.logout),
             onTap: () async {
               await auth.signOut();
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('islogin', false);
+              await prefs.setString('type', '');
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => Screen(),

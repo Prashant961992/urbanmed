@@ -6,6 +6,7 @@ import 'package:urbanmed/constant.dart';
 import 'package:urbanmed/dealdashboard.dart';
 import 'package:urbanmed/retailerforgotpassword.dart';
 import 'package:urbanmed/retailregister.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RetailLogin extends StatefulWidget {
   final uid;
@@ -100,6 +101,12 @@ class Login extends State<RetailLogin> {
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: emailInputController.text,
                             password: passwordInputController.text);
+
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.setBool('islogin', true);
+                        await prefs.setString('type', 'retail');
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
