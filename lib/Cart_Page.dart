@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:urbanmed/checkout_screen.dart';
 import 'package:urbanmed/no_data_Found.dart';
 
-import 'commons.dart';
-
 class CartPage extends StatefulWidget {
   CartPage({Key key}) : super(key: key);
 
@@ -105,7 +103,7 @@ class _CartPageState extends State<CartPage> {
                       snapshot.data.docs.length == 0
                           ? Container()
                           : RaisedButton(
-                              child: Text('Proceed To Check Out'),
+                              child: Text('Continue'),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => CheckOutScreen(),

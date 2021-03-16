@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:urbanmed/commons.dart';
 import 'package:urbanmed/cusdashboard.dart';
 
+class PaymentType {
+  final String title;
+  bool isSelected;
+  int id;
+
+  PaymentType({this.title, this.isSelected, this.id});
+}
+
 class CheckOutData {
   double price;
   String productName;
@@ -26,6 +34,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   var deliveryCharge = 25.0;
   var tax = 0.0;
   var tempCart = <dynamic>[];
+
+  var listCheckedBox = <PaymentType>[
+    PaymentType(title: 'Cash On Delivery', isSelected: true, id: 0),
+    PaymentType(title: 'Online', isSelected: false, id: 1),
+  ];
 
   @override
   void initState() {
@@ -65,6 +78,56 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       body: Container(
         child: Column(
           children: [
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              child: Text('Select Payment Methods'),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              child: Wrap(
+                spacing: 15,
+                runSpacing: 15,
+                children: [
+                  for (var ia = 0; ia < listCheckedBox.length; ia++)
+                    InkWell(
+                      onTap: () {
+                        for (var i = 0; i < listCheckedBox.length; i++) {
+                          if (i == ia) {
+                            listCheckedBox[i].isSelected = true;
+                          } else {
+                            listCheckedBox[i].isSelected = false;
+                          }
+                        }
+
+                        setState(() {});
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                                color: listCheckedBox[ia].isSelected
+                                    ? Colors.red
+                                    : Colors.grey,
+                                spreadRadius: 5),
+                          ],
+                        ),
+                        child: Center(
+                            child: Text(listCheckedBox[ia].title,
+                                style: listCheckedBox[ia].isSelected
+                                    ? TextStyle(color: Colors.white)
+                                    : TextStyle(color: Colors.black))),
+                      ),
+                    )
+                ],
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.all(16),
@@ -104,7 +167,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
             RaisedButton(
               child: Text('Click To Complete Order'),
               onPressed: () {
-                addToOrder();
+                var id = 0;
+                for (var i = 0; i < listCheckedBox.length; i++) {
+                  if (listCheckedBox[i].isSelected) {
+                    id = listCheckedBox[i].id;
+                    break;
+                  }
+                }
+                if (id == 0) {
+                  addToOrder('cash_in_delivery');
+                } else {}
               },
             )
           ],
@@ -113,11 +185,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     );
   }
 
-  void addToOrder() async {
+  void addToOrder(String type) async {
     showProgressDialog('Please Wait...', context);
     Map<String, dynamic> data = {
       'orderAmount': total,
-      'paymentType': 'cash_in_delivery',
+      'paymentType': type,
       'orderStatus': 'pending',
       'deliveredon': DateTime.now().add(Duration(days: 2)).toString(),
     };
