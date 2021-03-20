@@ -72,11 +72,6 @@ class _CustomerProductScreenState extends State<CustomerProductScreen> {
             } else {
               return Center(child: CircularProgressIndicator());
             }
-            // if (snapshot.connectionState == ConnectionState.waiting) {
-            //   return Center(child: Loading());
-            // } else {
-
-            // }
           }),
     );
   }

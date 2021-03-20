@@ -5,6 +5,7 @@ import 'package:urbanmed/cusdashboard.dart';
 import 'package:urbanmed/screen.dart';
 // import 'splashscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:urbanmed/splashscreen.dart';
 
 import 'dealdashboard.dart';
 // import 'package:urbanmed/retailerLogin.dart';
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: myColour,
       ),
-      home: widget.defaultWidget,
+      home: Splash(),
     );
   }
 }

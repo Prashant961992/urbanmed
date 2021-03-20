@@ -1,6 +1,4 @@
-import 'dart:ffi';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:geodesy/geodesy.dart';
@@ -10,7 +8,6 @@ import 'package:urbanmed/cusdrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/customer_product_screen.dart';
 import 'package:urbanmed/no_data_Found.dart';
-
 import 'Cart_Page.dart';
 
 class ShopData {
@@ -56,6 +53,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
   @override
   void initState() {
     super.initState();
+    radiuscontroller.text = '2';
     getNearestShops();
   }
 
@@ -86,22 +84,51 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           var latitude = checkDouble(shopData.docs[0].data()['Latitude']);
           var longitude = checkDouble(shopData.docs[0].data()['Longitude']);
 
-          // Geodesy geodesy = Geodesy();
-          // LatLng l1 = LatLng(37.4211245, -122.095);
-          // LatLng l2 = LatLng(latitude, longitude);
-          // num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1) / 1000;
-          // print(
-          //     "[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
-          var shopDatas = ShopData();
-          shopDatas.id = query.docs[i].id;
-          shopDatas.latitude = latitude;
-          shopDatas.longitude = longitude;
-          shopDatas.shopname = shopData.docs[0].data()['shopname'];
-          shopDatas.pincode = shopData.docs[0].data()['pincode'];
-          shopDatas.address = shopData.docs[0].data()['Address'].toString();
-          shopDatas.contactNUmber =
-              shopData.docs[0].data()['contact'].toString();
-          listShopID.add(shopDatas);
+          Geodesy geodesy = Geodesy();
+          LatLng l1 = LatLng(37.4211245, -122.095);
+          LatLng l2 = LatLng(latitude, longitude);
+          num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1) / 1000;
+          print(
+              "[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
+          if (distance == 0) {
+            var shopDatas = ShopData();
+            shopDatas.id = query.docs[i].id;
+            shopDatas.latitude = latitude;
+            shopDatas.longitude = longitude;
+            shopDatas.shopname = shopData.docs[0].data()['shopname'];
+            shopDatas.pincode = shopData.docs[0].data()['pincode'];
+            shopDatas.address = shopData.docs[0].data()['Address'].toString();
+            shopDatas.contactNUmber =
+                shopData.docs[0].data()['contact'].toString();
+            listShopID.add(shopDatas);
+          } else {
+            if (radiuscontroller.text.isNotEmpty) {
+              if (distance <= int.parse(radiuscontroller.text)) {
+                var shopDatas = ShopData();
+                shopDatas.id = query.docs[i].id;
+                shopDatas.latitude = latitude;
+                shopDatas.longitude = longitude;
+                shopDatas.shopname = shopData.docs[0].data()['shopname'];
+                shopDatas.pincode = shopData.docs[0].data()['pincode'];
+                shopDatas.address =
+                    shopData.docs[0].data()['Address'].toString();
+                shopDatas.contactNUmber =
+                    shopData.docs[0].data()['contact'].toString();
+                listShopID.add(shopDatas);
+              }
+            } else {
+              var shopDatas = ShopData();
+              shopDatas.id = query.docs[i].id;
+              shopDatas.latitude = latitude;
+              shopDatas.longitude = longitude;
+              shopDatas.shopname = shopData.docs[0].data()['shopname'];
+              shopDatas.pincode = shopData.docs[0].data()['pincode'];
+              shopDatas.address = shopData.docs[0].data()['Address'].toString();
+              shopDatas.contactNUmber =
+                  shopData.docs[0].data()['contact'].toString();
+              listShopID.add(shopDatas);
+            }
+          }
         }
       }
 
