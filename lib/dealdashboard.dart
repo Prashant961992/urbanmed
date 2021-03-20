@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/dealdrawer.dart';
+import 'package:urbanmed/edit_product.dart';
 import 'package:urbanmed/productdetails.dart';
 
 class Ddashboard extends StatefulWidget {
@@ -201,6 +202,18 @@ class Dashboard extends State<Ddashboard> {
                                         ' Product Name: ${d['productname']}'),
                                     subtitle:
                                         Text(' Product Price: ${d['cost']}'),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditProductScreen(
+                                            productId: docsData[s].id,
+                                          ), //(User),
+                                        ));
+                                      },
+                                    ),
                                   ),
                                 );
                               }),

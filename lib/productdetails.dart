@@ -191,35 +191,9 @@ class Product extends State<ProductRegister> {
                             } catch (e) {
                               showMyDialog(context, 'Error!!', e.message);
                             }
-
-                            // Navigator.of(context).pushReplacement(
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>
-                            //         ProductRegister(firebaseUser.uid), //User),
-                            //   ),
-                            // );
                           } else {
                             print("Error");
                           }
-
-                          /// database mate no codee
-                          // ProductDatabase.push().update({
-                          //   'productname': productnameInputController.text,
-                          //   'medicinetype': medicineTypeInputController.text,
-                          //   'manufacture_date':
-                          //       manufacturing_dateInputController.text,
-                          //   'expiry_date': expiring_dateInputController.text,
-                          //   'cost': costInputController.text,
-                          //   'productcompany':
-                          //       productcompanyInputController.text,
-                          // }).then((_) {
-                          //   productnameInputController.clear();
-                          //   medicineTypeInputController.clear();
-                          //   manufacturing_dateInputController.clear();
-                          //   expiring_dateInputController.clear();
-                          //   costInputController.clear();
-                          //   productcompanyInputController.clear();
-                          // }).catchError((onError) {});
                         }),
                     SizedBox(height: 12.0),
                     ElevatedButton(
