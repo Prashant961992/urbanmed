@@ -85,38 +85,14 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           var longitude = checkDouble(shopData.docs[0].data()['Longitude']);
 
           Geodesy geodesy = Geodesy();
-          LatLng l1 = LatLng(37.4211245, -122.095);
+          LatLng l1 =
+              LatLng(currentPosition.latitude, currentPosition.longitude);
           LatLng l2 = LatLng(latitude, longitude);
-          num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1) / 1000;
+          num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1);
           print(
               "[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
-          if (distance == 0) {
-            var shopDatas = ShopData();
-            shopDatas.id = query.docs[i].id;
-            shopDatas.latitude = latitude;
-            shopDatas.longitude = longitude;
-            shopDatas.shopname = shopData.docs[0].data()['shopname'];
-            shopDatas.pincode = shopData.docs[0].data()['pincode'];
-            shopDatas.address = shopData.docs[0].data()['Address'].toString();
-            shopDatas.contactNUmber =
-                shopData.docs[0].data()['contact'].toString();
-            listShopID.add(shopDatas);
-          } else {
-            if (radiuscontroller.text.isNotEmpty) {
-              if (distance <= int.parse(radiuscontroller.text)) {
-                var shopDatas = ShopData();
-                shopDatas.id = query.docs[i].id;
-                shopDatas.latitude = latitude;
-                shopDatas.longitude = longitude;
-                shopDatas.shopname = shopData.docs[0].data()['shopname'];
-                shopDatas.pincode = shopData.docs[0].data()['pincode'];
-                shopDatas.address =
-                    shopData.docs[0].data()['Address'].toString();
-                shopDatas.contactNUmber =
-                    shopData.docs[0].data()['contact'].toString();
-                listShopID.add(shopDatas);
-              }
-            } else {
+          if (radiuscontroller.text.isNotEmpty) {
+            if (distance <= int.parse(radiuscontroller.text)) {
               var shopDatas = ShopData();
               shopDatas.id = query.docs[i].id;
               shopDatas.latitude = latitude;
@@ -128,6 +104,17 @@ class CustomerDashboardState extends State<CustomerDashboard> {
                   shopData.docs[0].data()['contact'].toString();
               listShopID.add(shopDatas);
             }
+          } else {
+            var shopDatas = ShopData();
+            shopDatas.id = query.docs[i].id;
+            shopDatas.latitude = latitude;
+            shopDatas.longitude = longitude;
+            shopDatas.shopname = shopData.docs[0].data()['shopname'];
+            shopDatas.pincode = shopData.docs[0].data()['pincode'];
+            shopDatas.address = shopData.docs[0].data()['Address'].toString();
+            shopDatas.contactNUmber =
+                shopData.docs[0].data()['contact'].toString();
+            listShopID.add(shopDatas);
           }
         }
       }
