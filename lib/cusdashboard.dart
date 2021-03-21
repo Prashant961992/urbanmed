@@ -88,7 +88,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           LatLng l1 =
               LatLng(currentPosition.latitude, currentPosition.longitude);
           LatLng l2 = LatLng(latitude, longitude);
-          num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1);
+          num distance = geodesy.distanceBetweenTwoGeoPoints(l2, l1) / 1000;
           print(
               "[distanceBetweenTwoGeoPoints] Distance: " + distance.toString());
           if (radiuscontroller.text.isNotEmpty) {
