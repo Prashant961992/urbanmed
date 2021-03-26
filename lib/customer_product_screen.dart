@@ -6,8 +6,9 @@ import 'package:urbanmed/no_data_Found.dart';
 
 class CustomerProductScreen extends StatefulWidget {
   final String shopId;
+  final String shopName;
 
-  CustomerProductScreen({this.shopId}) : super();
+  CustomerProductScreen({this.shopId, this.shopName}) : super();
 
   @override
   _CustomerProductScreenState createState() => _CustomerProductScreenState();
@@ -20,7 +21,7 @@ class _CustomerProductScreenState extends State<CustomerProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        title: Text(widget.shopName ?? 'Products'),
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance

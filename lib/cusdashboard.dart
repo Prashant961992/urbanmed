@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:urbanmed/customer_product_screen.dart';
 import 'package:urbanmed/no_data_Found.dart';
 import 'Cart_Page.dart';
+import 'package:urbanmed/commons.dart';
 
 class ShopData {
   double latitude;
@@ -85,6 +86,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           var longitude = checkDouble(shopData.docs[0].data()['Longitude']);
 
           Geodesy geodesy = Geodesy();
+          // LatLng l1 = LatLng(22.275559, 73.18353);
           LatLng l1 =
               LatLng(currentPosition.latitude, currentPosition.longitude);
           LatLng l2 = LatLng(latitude, longitude);
@@ -236,6 +238,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
                               MaterialPageRoute(
                                   builder: (context) => CustomerProductScreen(
                                         shopId: listShopID[index].id,
+                                        shopName: listShopID[index].shopname,
                                       )),
                             );
                           },
@@ -283,14 +286,21 @@ class CustomerDashboardState extends State<CustomerDashboard> {
           return AlertDialog(
             title: Text("Enter Radius in Km :"),
             content: TextField(
+              keyboardType: TextInputType.number,
               controller: radiuscontroller,
             ),
             actions: <Widget>[
               ElevatedButton(
                 child: Text('Ok'),
                 onPressed: () {
-                  getNearestShops();
-                  Navigator.of(context).pop();
+                  var radius = double.parse(radiuscontroller.text);
+                  if (radius <= 5) {
+                    getNearestShops();
+                    Navigator.of(context).pop();
+                  } else {
+                    showMyDialog(
+                        context, 'Error!!', 'Please enter radius less then 5');
+                  }
                 },
               )
             ],
