@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +33,28 @@ class DrawerState extends State<MyDrawer> {
   @override
   void initState() {
     super.initState();
+    getProfile();
+  }
+
+  String username = '';
+  String mobilenumber = '';
+  String eid = '';
+  String address = '';
+
+  void getProfile() async {
+    var query = await FirebaseFirestore.instance
+        .collection('Customers')
+        .where('email', isEqualTo: auth.currentUser.email)
+        .get();
+    if (query.docs.isNotEmpty) {
+      var qData = query.docs[0].data();
+
+      username = qData['fullname'].toString();
+      mobilenumber = qData['contact'].toString();
+      eid = qData['email'].toString();
+      address = qData['address'].toString();
+      setState(() {});
+    }
   }
 
   @override
@@ -41,7 +64,7 @@ class DrawerState extends State<MyDrawer> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             arrowColor: Colors.transparent,
-            accountName: Text(''),
+            accountName: Text('$username'),
             accountEmail: Text("${auth.currentUser.email}"),
             onDetailsPressed: () {},
           ),

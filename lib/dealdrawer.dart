@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,27 @@ Future signOut() async {
 }
 
 class Ddrawer extends State<Dealdrawer> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  String ownerName;
+
+  @override
+  void initState() {
+    super.initState();
+    getStoreData();
+  }
+
+  void getStoreData() async {
+    var query = await FirebaseFirestore.instance
+        .collection('Retailer')
+        .where('email', isEqualTo: auth.currentUser.email)
+        .get();
+    if (query.docs.isNotEmpty) {
+      ownerName = query.docs[0].data()["ownername"];
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -34,7 +56,7 @@ class Ddrawer extends State<Dealdrawer> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             arrowColor: Colors.transparent,
-            accountName: Text("Owner Name"),
+            accountName: Text(ownerName ?? ""),
             accountEmail: Text("${auth.currentUser.email}"),
             onDetailsPressed: () {
               // Navigator.of(context).push(MaterialPageRoute(
