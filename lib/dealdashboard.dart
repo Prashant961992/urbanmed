@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:urbanmed/dealdrawer.dart';
 import 'package:urbanmed/edit_product.dart';
 import 'package:urbanmed/productdetails.dart';
+import 'package:urbanmed/shopregister.dart';
+import 'package:urbanmed/view_shop_info.dart';
 
 class Ddashboard extends StatefulWidget {
   @override
@@ -77,48 +79,7 @@ class Dashboard extends State<Ddashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[
-          // IconButton(
-          //   onPressed: () {
-          //     setState(() {
-          //       if (this.cusIcon.icon == Icons.search) {
-          //         this.cusIcon = Icon(Icons.cancel);
-          //         this.cusSearchbar = Container(
-          //           width: MediaQuery.of(context).size.width / 1.2,
-          //           height: 45,
-          //           margin: EdgeInsets.only(top: 15),
-          //           padding:
-          //               EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
-          //           decoration: BoxDecoration(
-          //               borderRadius: BorderRadius.all(Radius.circular(50)),
-          //               color: Colors.white,
-          //               boxShadow: [
-          //                 BoxShadow(color: Colors.black12, blurRadius: 20)
-          //               ]),
-          //           child: TextField(
-          //             textInputAction: TextInputAction.go,
-          //             decoration: InputDecoration(
-          //                 border: InputBorder.none,
-          //                 hintText: "Hey, Searching Something????"),
-          //             style: TextStyle(
-          //               fontSize: 16.0,
-          //               color: Colors.white,
-          //             ),
-          //           ),
-          //         );
-          //       } else {
-          //         this.cusIcon = Icon(Icons.search);
-          //         this.cusSearchbar = Text("UrbanMed");
-          //       }
-          //     });
-          //   },
-          //   icon: cusIcon,
-          // ),
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: Icon(Icons.more_vert),
-          // ),
-        ],
+        actions: <Widget>[],
         title: cusSearchbar,
       ),
       drawer: Dealdrawer(),
@@ -147,6 +108,17 @@ class Dashboard extends State<Ddashboard> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
+                        Container(
+                          width: width,
+                          child: FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewShopInfo(User, true),
+                                ));
+                              },
+                              child: Text('View Info')),
+                        ),
                         Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context).canvasColor,
