@@ -213,11 +213,6 @@ class Shop extends State<ShopRegister> {
                         setState(() => pharmacyno = val);
                       },
                     ),
-                    SizedBox(height: 20.0),
-                    Text(
-                      'Back to Dashboard',
-                      style: TextStyle(color: Colors.white),
-                    ),
                     SizedBox(height: 20),
                     RaisedButton(
                         color: Colors.pink[400],
@@ -293,7 +288,7 @@ class Shop extends State<ShopRegister> {
                     RaisedButton(
                       color: Colors.pink[400],
                       child: Text(
-                        'Back to Dashboard',
+                        'Back to Registration',
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () {

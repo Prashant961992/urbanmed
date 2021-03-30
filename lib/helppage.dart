@@ -57,7 +57,7 @@ class _HelppageState extends State<Helppage> {
                                 margin: EdgeInsets.only(left: 5.0),
                               ),
                               Text(
-                                'Email Us',
+                                'Email Us at projectmedical1234@gmail.com',
                                 style: TextStyle(
                                   fontSize: 17.0,
                                   color: Colors.black87,
@@ -78,7 +78,7 @@ class _HelppageState extends State<Helppage> {
                                 margin: EdgeInsets.only(left: 5.0),
                               ),
                               Text(
-                                'About Us',
+                                'About Us ',
                                 style: TextStyle(
                                   fontSize: 17.0,
                                   color: Colors.black87,

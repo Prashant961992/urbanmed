@@ -200,6 +200,40 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             showMyDialog(context, 'Error!!', 'Fail to load');
                           }
                         }),
+                    ElevatedButton(
+                        child: Text(
+                          'Delete Product',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                           /* Map<String, dynamic>data= {
+                              'productname': productnameInputController.text,
+                              'medicinetype': medicineTypeInputController.text,
+                              'manufacture_date':
+                              manufacturingdateInputController.text,
+                              'expiry_date': expiringdateInputController.text,
+                              'cost': costInputController.text,
+                              'productcompany':
+                              productcompanyInputController.text,
+                            };*/
+                            try {
+                              await FirebaseFirestore.instance
+                                  .collection('Retailer')
+                                  .doc(shopID)
+                                  .collection("ProductData")
+                                  .doc(widget.productId)
+                                  .delete();
+                              Navigator.of(context).pop();
+                              showMyDialog(context, 'Success',
+                                  'Product deleted successfully....');
+                            } catch (e) {
+                              showMyDialog(context, 'Error!!', e.message);
+                            }
+                          } else {
+                            showMyDialog(context, 'Error!!', 'Fail to load');
+                          }
+                        }),
                     // SizedBox(height: 12.0),
                     // ElevatedButton(
                     //   child: Text(

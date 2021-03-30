@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:urbanmed/commons.dart';
 import 'package:urbanmed/cusdashboard.dart';
-import 'package:urbanmed/show_qrcode_screen.dart';
+import 'package:urbanmed/online_pay.dart';
 
 class PaymentType {
   final String title;
@@ -67,7 +68,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
     tax = subTotal * 18 / 100;
     total = subTotal + tax + deliveryCharge;
-    setState(() {});
+    setState(() {
+    });
   }
 
   @override
@@ -182,7 +184,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   ispaymentonline = true;
                   addToOrder('online');
                 }
-              },
+                },
             )
           ],
         ),
@@ -196,7 +198,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
       'orderAmount': total,
       'paymentType': type,
       'orderStatus': 'pending',
-      'deliveredon': DateTime.now().add(Duration(days: 2)).toString(),
+      'deliveredon': DateTime.now().add(Duration(hours:24)).toString(),
     };
 
     var documentData = await FirebaseFirestore.instance
@@ -231,11 +233,22 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     });
 
     if (ispaymentonline) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => ShowQrCodeScreen(),
-          ),
-          (route) => false);
+      GetBuilder<PaymentGateway>(
+        init:PaymentGateway(),
+        builder: (value){
+         return GestureDetector(
+           onTap: (){
+              value.dispatchPayment(total, 'Shivam', 123456789, 'shah1200@gmail.com', 'Paytm');
+           },
+         );
+        },
+      );
+
+      // Navigator.of(context).pushAndRemoveUntil(
+     //      MaterialPageRoute(
+     //        builder: (context) => ShowQrCodeScreen(),
+     //      ),
+     //      (route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(

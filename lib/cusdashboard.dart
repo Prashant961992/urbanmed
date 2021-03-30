@@ -101,7 +101,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
               shopDatas.longitude = longitude;
               shopDatas.shopname = shopData.docs[0].data()['shopname'];
               shopDatas.pincode = shopData.docs[0].data()['pincode'];
-              shopDatas.address = shopData.docs[0].data()['Address'].toString();
+              shopDatas.address = shopData.docs[0].data()['address'].toString();
               shopDatas.contactNUmber =
                   shopData.docs[0].data()['contact'].toString();
               listShopID.add(shopDatas);
@@ -113,7 +113,7 @@ class CustomerDashboardState extends State<CustomerDashboard> {
             shopDatas.longitude = longitude;
             shopDatas.shopname = shopData.docs[0].data()['shopname'];
             shopDatas.pincode = shopData.docs[0].data()['pincode'];
-            shopDatas.address = shopData.docs[0].data()['Address'].toString();
+            shopDatas.address = shopData.docs[0].data()['address'].toString();
             shopDatas.contactNUmber =
                 shopData.docs[0].data()['contact'].toString();
             listShopID.add(shopDatas);
@@ -169,10 +169,6 @@ class CustomerDashboardState extends State<CustomerDashboard> {
               });
             },
             icon: cusIcon,
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.more_vert),
           ),
         ],
         title: cusSearchbar,

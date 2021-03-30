@@ -39,30 +39,10 @@ class _ProfilepageState extends State<Profilepage> {
 
   @override
   Widget build(BuildContext context) {
-    Icon ofericon = Icon(
-      Icons.edit,
-      color: Colors.black38,
-    );
-    Icon keyloch = Icon(
-      Icons.vpn_key,
-      color: Colors.black38,
-    );
-    Icon clear = Icon(
-      Icons.history,
-      color: Colors.black38,
-    );
-    Icon logout = Icon(
-      Icons.do_not_disturb_on,
-      color: Colors.black38,
-    );
-
     Icon menu = Icon(
       Icons.more_vert,
       color: Colors.black38,
     );
-
-    bool checkboxValueA = true;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),
@@ -87,24 +67,8 @@ class _ProfilepageState extends State<Profilepage> {
                       width: 100.0,
                       height: 100.0,
                       margin: const EdgeInsets.all(10.0),
-                      child: ClipOval(
-                        child: Image.network(
-                            'https://www.fakenamegenerator.com/images/sil-female.png'),
-                      ),
                     ),
                   ),
-                  // FlatButton(
-                  //   onPressed: null,
-                  //   child: Text(
-                  //     'Change',
-                  //     style:
-                  //         TextStyle(fontSize: 13.0, color: Colors.blueAccent),
-                  //   ),
-                  //   shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(30.0),
-                  //       side: BorderSide(color: Colors.blueAccent)),
-                  // ),
-                  //Padding(padding: EdgeInsets.only(left: 20.0),),
                   Container(
                     padding: EdgeInsets.all(12.0),
                     child: Row(
@@ -145,13 +109,6 @@ class _ProfilepageState extends State<Profilepage> {
                             ],
                           ),
                         ),
-                        // Container(
-                        //   alignment: Alignment.centerLeft,
-                        //   child: IconButton(
-                        //       icon: ofericon,
-                        //       color: Colors.blueAccent,
-                        //       onPressed: null),
-                        // ),
                       ],
                     ),
                   ),
@@ -163,7 +120,7 @@ class _ProfilepageState extends State<Profilepage> {
             margin:
                 EdgeInsets.only(left: 12.0, top: 5.0, right: 0.0, bottom: 5.0),
             child: Text(
-              'Addresses',
+              'Address',
               style: TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
@@ -211,22 +168,6 @@ class _ProfilepageState extends State<Profilepage> {
                                         fontSize: 13.0,
                                         letterSpacing: 0.5),
                                   ),
-                                  // _verticalDivider(),
-                                  // Text(
-                                  //   'vadodara',
-                                  //   style: TextStyle(
-                                  //       color: Colors.black45,
-                                  //       fontSize: 13.0,
-                                  //       letterSpacing: 0.5),
-                                  // ),
-                                  // _verticalDivider(),
-                                  // Text(
-                                  //   ' 390025',
-                                  //   style: TextStyle(
-                                  //       color: Colors.black45,
-                                  //       fontSize: 13.0,
-                                  //       letterSpacing: 0.5),
-                                  // ),
                                 ],
                               ),
                             ),
@@ -248,14 +189,6 @@ class _ProfilepageState extends State<Profilepage> {
                                     ),
                                   ),
                                   _verticalD(),
-                                  Checkbox(
-                                    value: checkboxValueA,
-                                    onChanged: (bool value) {
-                                      setState(() {
-                                        checkboxValueA = value;
-                                      });
-                                    },
-                                  ),
                                 ],
                               ),
                             )
@@ -275,60 +208,6 @@ class _ProfilepageState extends State<Profilepage> {
               ],
             ),
           ),
-          // Container(
-          //   margin: EdgeInsets.all(7.0),
-          //   child: Card(
-          //     elevation: 1.0,
-          //     child: Row(
-          //       children: <Widget>[
-          //         IconButton(icon: keyloch, onPressed: null),
-          //         _verticalD(),
-          //         Text(
-          //           'Change Password',
-          //           style: TextStyle(fontSize: 15.0, color: Colors.black87),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // Container(
-          //   margin: EdgeInsets.all(7.0),
-          //   child: Card(
-          //     elevation: 1.0,
-          //     child: Row(
-          //       children: <Widget>[
-          //         IconButton(icon: clear, onPressed: null),
-          //         _verticalD(),
-          //         Text(
-          //           'Clear History',
-          //           style: TextStyle(
-          //             fontSize: 15.0,
-          //             color: Colors.black87,
-          //           ),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // Container(
-          //   margin: EdgeInsets.all(7.0),
-          //   child: Card(
-          //     elevation: 1.0,
-          //     child: Row(
-          //       children: <Widget>[
-          //         IconButton(icon: logout, onPressed: null),
-          //         _verticalD(),
-          //         Text(
-          //           'Deactivate Account',
-          //           style: TextStyle(
-          //             fontSize: 15.0,
-          //             color: Colors.redAccent,
-          //           ),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // )
         ],
       ))),
     );

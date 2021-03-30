@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:urbanmed/dealdashboard.dart';
 import 'package:urbanmed/faq_screen.dart';
-import 'package:urbanmed/productdetails.dart';
+import 'package:urbanmed/productregister.dart';
 import 'package:urbanmed/profilepage.dart';
 import 'package:urbanmed/retailerLogin.dart';
 import 'package:urbanmed/helppage.dart';

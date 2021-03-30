@@ -4,9 +4,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:urbanmed/dealdrawer.dart';
 import 'package:urbanmed/edit_product.dart';
-import 'package:urbanmed/productdetails.dart';
-import 'package:urbanmed/shopregister.dart';
+import 'package:urbanmed/searchproduct.dart';
 import 'package:urbanmed/view_shop_info.dart';
+import 'package:urbanmed/productregister.dart';
 
 class Ddashboard extends StatefulWidget {
   @override
@@ -18,8 +18,48 @@ class Dashboard extends State<Ddashboard> {
   final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
   Position _currentPosition;
   String _currentAddress;
+  final TextEditingController searchcontroller = TextEditingController();
+  bool searchState = false;
   var query;
   var shopID = '';
+  var queryResult = [];
+  var temp = [];
+
+  //search bar code
+  searchProduct(String search) async {
+    return FirebaseFirestore.instance
+        .collection('Retailer')
+        .doc(shopID)
+        .collection("ProductData")
+        .where('productname', isEqualTo: search.substring(0, 1).toUpperCase())
+        .get();
+  }
+
+  initiateState(value) {
+    if (value == 0) {
+      setState(() {
+        queryResult = [];
+        temp = [];
+      });
+    }
+    var letter = value.substring(0, 1).toUpperCase() + value.sunstring(1);
+    if (queryResult.length == 0 && value.length == 1) {
+      Search().searchProduct(value).then((QuerySnapshot data) {
+        for (int i = 0; i < data.docs.length; ++i) {
+          queryResult.add(data.docs[i].data());
+        }
+      });
+    } else {
+      temp = [];
+      queryResult.forEach((element) {
+        if (element['productname'].startsWith(letter)) {
+          setState(() {
+            temp.add(element);
+          });
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -69,8 +109,8 @@ class Dashboard extends State<Ddashboard> {
     }
   }
 
-  Icon cusIcon = Icon(Icons.search);
-  Widget cusSearchbar = Text("UrbanMed");
+  //Icon cusIcon = Icon(Icons.search);
+  //Widget cusSearchbar = Text("UrbanMed");
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +119,26 @@ class Dashboard extends State<Ddashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[],
-        title: cusSearchbar,
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                setState(() {
+                  searchState = !searchState;
+                });
+              }),
+        ],
+        title: !searchState
+            ? Text("UrbanMed")
+            : TextField(
+                decoration: InputDecoration(
+                  hintText: "Enter Product Name",
+                  hintStyle: TextStyle(color: Colors.white),
+                ),
+              ),
       ),
       drawer: Dealdrawer(),
       floatingActionButton: FloatingActionButton(
@@ -93,6 +151,18 @@ class Dashboard extends State<Ddashboard> {
         backgroundColor: Colors.orange,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        // for the card to be listed
+
+        // ListView.builder(
+        //     padding: EdgeInsets.only(left: 10.0, right: 10.0),
+        //     crossAxisCount: 2,
+        //     crossAxisSpacing: 4.0,
+        //     mainAxisSpacing: 4.0,
+        //     primary: false,
+        //     shrinkWrap: true,
+        //     children: temp.map((element) {
+        //       return buildcard(element);
+        //     }).toList())
       body: shopID.isEmpty
           ? Center(child: CircularProgressIndicator())
           : StreamBuilder(
@@ -200,5 +270,83 @@ class Dashboard extends State<Ddashboard> {
                 }
               }),
     );
+  }
+
+  Widget buildcard(element) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('Retailer')
+            .doc(shopID)
+            .collection("ProductData")
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            var docsData = snapshot.data.docs;
+            return SingleChildScrollView(
+                child: Container(
+                  width: width,
+                  height: height - 120,
+                  child: ListView.builder(
+                      itemCount: docsData.length,
+                      itemBuilder: (c, s) {
+                        var d = docsData[s];
+                        return Card(
+                          elevation: 0.8,
+                          child: ListTile(
+                            title: Text(
+                                ' Product Name: ${d['productname']}'),
+                            subtitle:
+                            Text(' Product Price: ${d['cost']}'),
+                            trailing: IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditProductScreen(
+                                        productId: docsData[s].id,
+                                      ), //(User),
+                                ));
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                )
+            );
+          } else {
+            return Center(
+              child: Text('No Data Found'),
+            );
+          }
+        });
+    // return Container(
+    //   width: width,
+    //   height: height - 120,
+    //   child: ListView.builder(
+    //       itemCount: docsData.length,
+    //       itemBuilder: (c, s) {
+    //         var d = docsData[s];
+    //         return Card(
+    //           elevation: 0.8,
+    //           child: ListTile(
+    //             title: Text(' Product Name: ${d['productname']}'),
+    //             subtitle: Text(' Product Price: ${d['cost']}'),
+    //             trailing: IconButton(
+    //               icon: Icon(Icons.edit),
+    //               onPressed: () {
+    //                 Navigator.of(context).push(MaterialPageRoute(
+    //                   builder: (context) => EditProductScreen(
+    //                     productId: docsData[s].id,
+    //                   ), //(User),
+    //                 ));
+    //               },
+    //             ),
+    //           ),
+    //         );
+    //       }),
+    // );
   }
 }
