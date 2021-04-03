@@ -134,6 +134,10 @@ class Dashboard extends State<Ddashboard> {
         title: !searchState
             ? Text("UrbanMed")
             : TextField(
+                controller: searchcontroller,
+                onChanged: (value) {
+                  setState(() {});
+                },
                 decoration: InputDecoration(
                   hintText: "Enter Product Name",
                   hintStyle: TextStyle(color: Colors.white),
@@ -151,26 +155,33 @@ class Dashboard extends State<Ddashboard> {
         backgroundColor: Colors.orange,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        // for the card to be listed
+      // for the card to be listed
 
-        // ListView.builder(
-        //     padding: EdgeInsets.only(left: 10.0, right: 10.0),
-        //     crossAxisCount: 2,
-        //     crossAxisSpacing: 4.0,
-        //     mainAxisSpacing: 4.0,
-        //     primary: false,
-        //     shrinkWrap: true,
-        //     children: temp.map((element) {
-        //       return buildcard(element);
-        //     }).toList())
+      // ListView.builder(
+      //     padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      //     crossAxisCount: 2,
+      //     crossAxisSpacing: 4.0,
+      //     mainAxisSpacing: 4.0,
+      //     primary: false,
+      //     shrinkWrap: true,
+      //     children: temp.map((element) {
+      //       return buildcard(element);
+      //     }).toList())
       body: shopID.isEmpty
           ? Center(child: CircularProgressIndicator())
           : StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('Retailer')
-                  .doc(shopID)
-                  .collection("ProductData")
-                  .snapshots(),
+              stream: searchcontroller.text.length > 0
+                  ? FirebaseFirestore.instance
+                      .collection('Retailer')
+                      .doc(shopID)
+                      .collection("ProductData")
+                      .where('productname', isEqualTo: searchcontroller.text)
+                      .snapshots()
+                  : FirebaseFirestore.instance
+                      .collection('Retailer')
+                      .doc(shopID)
+                      .collection("ProductData")
+                      .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var docsData = snapshot.data.docs;
@@ -286,36 +297,31 @@ class Dashboard extends State<Ddashboard> {
             var docsData = snapshot.data.docs;
             return SingleChildScrollView(
                 child: Container(
-                  width: width,
-                  height: height - 120,
-                  child: ListView.builder(
-                      itemCount: docsData.length,
-                      itemBuilder: (c, s) {
-                        var d = docsData[s];
-                        return Card(
-                          elevation: 0.8,
-                          child: ListTile(
-                            title: Text(
-                                ' Product Name: ${d['productname']}'),
-                            subtitle:
-                            Text(' Product Price: ${d['cost']}'),
-                            trailing: IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      EditProductScreen(
-                                        productId: docsData[s].id,
-                                      ), //(User),
-                                ));
-                              },
-                            ),
-                          ),
-                        );
-                      }),
-                )
-            );
+              width: width,
+              height: height - 120,
+              child: ListView.builder(
+                  itemCount: docsData.length,
+                  itemBuilder: (c, s) {
+                    var d = docsData[s];
+                    return Card(
+                      elevation: 0.8,
+                      child: ListTile(
+                        title: Text(' Product Name: ${d['productname']}'),
+                        subtitle: Text(' Product Price: ${d['cost']}'),
+                        trailing: IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EditProductScreen(
+                                productId: docsData[s].id,
+                              ), //(User),
+                            ));
+                          },
+                        ),
+                      ),
+                    );
+                  }),
+            ));
           } else {
             return Center(
               child: Text('No Data Found'),
